@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: secure
+  labels:
+    app: secure
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: secure
+  template:
+    metadata:
+      labels:
+        app: secure
+      annotations:
+        "consul.hashicorp.com/connect-inject": "true"
+    spec:
+      containers:
+      - name: secure
+        image: nicholasjackson/fake-service:v0.7.7
+        ports:
+        - containerPort: 9090
+        env:
+        - name: "LISTEN_ADDR"
+          value: "0.0.0.0:9090"
+        - name: "NAME"
+          value: "secure service"
+        - name: "MESSAGE"
+          value: "secure response"
+        - name: "HTTP_CLIENT_KEEP_ALIVES"
+          value: "false"
